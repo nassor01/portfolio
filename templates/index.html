@@ -1,0 +1,150 @@
+{% load static %}
+{% load portfolio_extras %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.name|default:'Nassoro Mohammad' }} | Portfolio</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Floating Background Particles -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-content">
+            <a href="#home" class="logo">NM<span>.</span></a>
+            <ul class="nav-links">
+                <li><a href="#home">/home</a></li>
+                <li><a href="#about">/about</a></li>
+                <li><a href="#projects">/work</a></li>
+                <li><a href="#contact">/contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-avatar-wrapper">
+            {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="hero-avatar">
+            {% else %}
+            <div class="hero-avatar"
+                style="background: var(--bg-surface); display:flex; align-items:center; justify-content:center; font-size:4rem;">
+                <i class="fa-solid fa-code"></i>
+            </div>
+            {% endif %}
+        </div>
+
+        <p class="hero-greeting" id="dynamic-greeting">&gt; Hello, I'm</p>
+        <h1 class="hero-name">{{ profile.name|default:'Nassoro Mohammad' }}</h1>
+
+        <div class="hero-role-pills">
+            {% with profile.role|split:"|" as roles %}
+            {% for role in roles %}
+            <span class="role-pill">{{ role|trim }}</span>
+            {% endfor %}
+            {% endwith %}
+        </div>
+
+        <div class="hero-cta-group">
+            <a href="#projects" class="btn btn-primary">View Solutions</a>
+            <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="container section-margin">
+        <h2 class="section-title">/System.Profile</h2>
+        <div class="card-grid">
+            <div class="glass-card">
+                <h3 class="text-accent" style="margin-bottom: 1rem;">$ Core.Bio</h3>
+                <p>{{ profile.bio }}</p>
+            </div>
+
+            <div class="glass-card">
+                <h3 class="text-accent" style="margin-bottom: 1.5rem;">$ Tech.Stack</h3>
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    {% for category, skill_list in skills.items %}
+                    <div>
+                        <h4
+                            style="font-size: 0.9rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.75rem;">
+                            {{ category }}</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            {% for skill in skill_list %}
+                            <span class="role-pill" style="background: rgba(255,255,255,0.03);">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="container section-margin">
+        <h2 class="section-title">/Latest.Builds</h2>
+        <div class="card-grid">
+            {% for project in projects %}
+            <div class="glass-card">
+                <div
+                    style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.5rem;">
+                    // {{ project.tags }}</div>
+                <h3 style="margin-bottom: 1rem;">{{ project.title }}</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">{{ project.description }}</p>
+                {% if project.link %}
+                <a href="{{ project.link }}" class="text-accent" target="_blank" style="font-weight: 600;">View Build <i
+                        class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="container section-margin" style="text-align: center;">
+        <h2 class="section-title">/Initiate.Contact</h2>
+        <div class="glass-card" style="max-width: 600px; margin: 0 auto; text-align: left;">
+            <p style="margin-bottom: 2rem;">{ "status": "Ready for new challenges", "location": "{{ profile.location }}"
+                }</p>
+            <form id="contactForm">
+                <div style="display: grid; gap: 1.5rem;">
+                    <input type="text" placeholder="Name" class="role-pill"
+                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem;">
+                    <input type="email" placeholder="Email" class="role-pill"
+                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem;">
+                    <textarea placeholder="Message" class="role-pill"
+                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem; min-height: 150px;"></textarea>
+                    <button type="submit" class="btn btn-primary" style="border-radius: 12px; cursor: pointer;">Transmit
+                        Message</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Socials & Footer -->
+    <footer class="container section-margin">
+        <div class="social-pills">
+            {% if profile.github_url %}<a href="{{ profile.github_url }}" target="_blank" class="social-pill-btn"><i
+                    class="fa-brands fa-github"></i></a>{% endif %}
+            {% if profile.linkedin_url %}<a href="{{ profile.linkedin_url }}" target="_blank" class="social-pill-btn"><i
+                    class="fa-brands fa-linkedin-in"></i></a>{% endif %}
+            {% if profile.twitter_url %}<a href="{{ profile.twitter_url }}" target="_blank" class="social-pill-btn"><i
+                    class="fa-brands fa-x-twitter"></i></a>{% endif %}
+            <a href="mailto:{{ profile.email }}" class="social-pill-btn"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+        <div style="text-align: center; color: var(--text-dim); font-family: var(--font-mono); font-size: 0.8rem;">
+            &copy; 2026 ARCHITECT.IO // ALL RIGHTS RESERVED
+        </div>
+    </footer>
+
+    <script src="{% static 'script.js' %}"></script>
+</body>
+
+</html>
