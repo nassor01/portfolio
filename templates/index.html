@@ -113,14 +113,24 @@
         <div class="glass-card" style="max-width: 600px; margin: 0 auto; text-align: left;">
             <p style="margin-bottom: 2rem;">{ "status": "Ready for new challenges", "location": "{{ profile.location }}"
                 }</p>
-            <form id="contactForm">
+            {% if messages %}
+            <div class="messages" style="margin-bottom: 1rem;">
+                {% for message in messages %}
+                <div class="role-pill" style="width: 100%; border-radius: 12px; background: {% if message.tags == 'success' %}#28a745{% else %}#dc3545{% endif %}; padding: 1rem; color: #fff; margin-bottom: 0.5rem; border: none;">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form id="contactForm" method="POST" action="{% url 'home' %}#contact">
+                {% csrf_token %}
                 <div style="display: grid; gap: 1.5rem;">
-                    <input type="text" placeholder="Name" class="role-pill"
-                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem;">
-                    <input type="email" placeholder="Email" class="role-pill"
-                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem;">
-                    <textarea placeholder="Message" class="role-pill"
-                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem; min-height: 150px;"></textarea>
+                    <input type="text" name="name" placeholder="Name" class="role-pill" required
+                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem; border: 1px solid rgba(255,255,255,0.1);">
+                    <input type="email" name="email" placeholder="Email" class="role-pill" required
+                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem; border: 1px solid rgba(255,255,255,0.1);">
+                    <textarea name="message" placeholder="Message" class="role-pill" required
+                        style="width: 100%; border-radius: 12px; background: var(--bg-deep); padding: 1rem; min-height: 150px; border: 1px solid rgba(255,255,255,0.1);"></textarea>
                     <button type="submit" class="btn btn-primary" style="border-radius: 12px; cursor: pointer;">Transmit
                         Message</button>
                 </div>

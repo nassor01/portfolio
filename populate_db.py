@@ -6,6 +6,7 @@ django.setup()
 
 from portfolio.models import Profile, Project, Skill
 from django.core.files import File
+from django.conf import settings
 
 # Create Profile (Masculine adaptation of Kimberly's profile)
 profile, created = Profile.objects.get_or_create(
@@ -30,8 +31,10 @@ profile.instagram_url = "https://www.instagram.com/nxssorr"
 profile.phone = "0792404979"
 profile.save()
 
+from django.conf import settings
+
 # Set Avatar if it exists
-avatar_path = r'C:\Users\moham\.gemini\antigravity\brain\16408c44-c7f7-45c1-9cde-6314cf39aac6\nassoro_avatar_1773174008276.png'
+avatar_path = os.path.join(settings.BASE_DIR, 'nassoro_avatar.png')
 if os.path.exists(avatar_path) and not profile.avatar:
     with open(avatar_path, 'rb') as f:
         profile.avatar.save('nassoro_avatar.png', File(f), save=True)
