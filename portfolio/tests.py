@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.core import mail
 from .models import Profile, Project, Skill
 from .forms import ContactForm
 
@@ -27,6 +28,9 @@ class PortfolioModelTests(TestCase):
         )
         self.assertEqual(str(skill), "Development: Django")
 
+from django.test import TestCase, Client, override_settings
+
+@override_settings(DEFAULT_FROM_EMAIL='test@example.com')
 class PortfolioViewTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -59,6 +63,8 @@ class PortfolioViewTests(TestCase):
         messages = list(response.context['messages'])
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "Message transmitted successfully!")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Portfolio Contact Form: John Doe')
 
     def test_home_view_post_invalid_form(self):
         data = {

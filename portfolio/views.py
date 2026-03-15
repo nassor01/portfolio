@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import Profile, Project, Skill
 from .forms import ContactForm
 
@@ -22,7 +24,25 @@ def home(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            messages.success(request, "Message transmitted successfully!")
+            name = form.cleaned_data.get('name')
+            email = form.cleaned_data.get('email')
+            message = form.cleaned_data.get('message')
+            
+            subject = f"Portfolio Contact Form: {name}"
+            body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+            
+            try:
+                send_mail(
+                    subject,
+                    body,
+                    settings.DEFAULT_FROM_EMAIL,
+                    ['mohammadnassor1@gmail.com'],
+                    fail_silently=False,
+                )
+                messages.success(request, "Message transmitted successfully!")
+            except Exception as e:
+                print(f"Email error: {e}")
+                messages.error(request, "Error transmitting message. Please try again later.")
         else:
             messages.error(request, "Error transmitting message. Please check the details.")
     else:
